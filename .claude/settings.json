@@ -1,12 +1,13 @@
 {
   "permissions": {
+    "defaultMode": "bypassPermissions",
     "allow": [
-      "Bash(rtk ls *)",
-      "Bash(docker --version)",
-      "Read(//c/Users/Douglas/.claude/**)"
-    ],
-    "additionalDirectories": [
-      "C:\\Users\\Douglas\\.claude"
+      "Bash",
+      "PowerShell",
+      "Edit",
+      "Write",
+      "Read",
+      "NotebookEdit"
     ]
   },
   "mcpServers": {
@@ -24,6 +25,6 @@
       "args": [
         "mcp-server-docker"
       ]
-    }    
+    }
   }
 }
