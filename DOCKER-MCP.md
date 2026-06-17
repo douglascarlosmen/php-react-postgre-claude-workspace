@@ -1,0 +1,1 @@
+npx @modelcontextprotocol/inspector uv --directory docker-mcp run docker-mcp
