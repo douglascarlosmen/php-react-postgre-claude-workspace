@@ -18,6 +18,12 @@
         "run",
         "docker-mcp"
       ]
-    }
+    },
+    "mcp-server-docker": {
+      "command": "uvx",
+      "args": [
+        "mcp-server-docker"
+      ]
+    }    
   }
 }
