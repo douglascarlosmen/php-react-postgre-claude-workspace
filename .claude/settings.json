@@ -32,14 +32,33 @@
         "run",
         "-i",
         "--rm",
+        "--network",
+        "php-react-postgre-claude-workspace_default",
         "-e",
         "DATABASE_URI",
         "crystaldba/postgres-mcp",
         "--access-mode=unrestricted"
       ],
       "env": {
-        "DATABASE_URI": "postgresql://postgres:postgres@localhost:5432/myapp_db"
+        "DATABASE_URI": "postgresql://postgres:postgres@postgres:5432/myapp_db"
       }
+    },
+    "postgres-full": {
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "--network",
+        "php-react-postgre-claude-workspace_default",
+        "-e",
+        "DATABASE_URI=postgresql://postgres:postgres@postgres:5432/myapp_db",
+        "node:20-alpine",
+        "npx",
+        "-y",
+        "mcp-postgres-full-access",
+        "postgresql://postgres:postgres@postgres:5432/myapp_db"
+      ]
     }
   }
 }
