@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { useAuthStore } from './store/authStore'
 import LoginPage from './pages/LoginPage'
 import ProjectsPage from './pages/ProjectsPage'
+import ProjectBoardsPage from './pages/ProjectBoardsPage'
 import BoardPage from './pages/BoardPage'
 import AppLayout from './components/layout/AppLayout'
 
@@ -26,6 +27,7 @@ export default function App() {
         >
           <Route index element={<Navigate to="/projects" replace />} />
           <Route path="projects" element={<ProjectsPage />} />
+          <Route path="projects/:projectId" element={<ProjectBoardsPage />} />
           <Route path="boards/:boardId" element={<BoardPage />} />
         </Route>
         <Route path="*" element={<Navigate to="/" replace />} />

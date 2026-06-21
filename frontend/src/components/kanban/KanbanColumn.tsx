@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { useDroppable } from '@dnd-kit/core'
-import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable'
-import { useSortable } from '@dnd-kit/sortable'
+import { SortableContext, verticalListSortingStrategy, useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import type { Column } from '../../types'
 import { useBoardStore } from '../../store/boardStore'
@@ -18,13 +17,22 @@ export default function KanbanColumn({ column, onCardClick }: Props) {
   const { removeColumn } = useBoardStore()
   const [showAdd, setShowAdd] = useState(false)
 
-  const { attributes, listeners, setNodeRef: setSortableRef, transform, transition, isDragging } = useSortable({
-    id: column.id,
+  // Sortable for column reordering — listeners applied only to the drag handle (header)
+  const {
+    attributes,
+    listeners,
+    setNodeRef: setSortableRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({
+    id: `col-${column.id}`,
     data: { type: 'column', column },
   })
 
+  // Droppable so cards can be dropped onto an empty column area
   const { setNodeRef: setDropRef } = useDroppable({
-    id: column.id,
+    id: `col-drop-${column.id}`,
     data: { type: 'column', column },
   })
 
@@ -34,31 +42,36 @@ export default function KanbanColumn({ column, onCardClick }: Props) {
     opacity: isDragging ? 0.4 : 1,
   }
 
-  function setRef(el: HTMLElement | null) {
-    setSortableRef(el)
-    setDropRef(el)
-  }
-
   async function handleDeleteColumn() {
     if (!confirm(`Excluir coluna "${column.name}" e todas suas tarefas?`)) return
     removeColumn(column.id)
     toast.success('Coluna excluída')
   }
 
-  const taskIds = column.tasks.map((t) => t.id)
+  const taskIds = column.tasks.map((t) => `task-${t.id}`)
 
   return (
-    <div ref={setRef} style={style} className="w-72 shrink-0 flex flex-col bg-surface rounded-xl border border-border group" {...attributes}>
-      <div className="flex items-center justify-between px-3 py-2.5 border-b border-border" {...listeners}>
+    <div
+      ref={setSortableRef}
+      style={style}
+      className="w-72 shrink-0 flex flex-col bg-surface rounded-xl border border-border group"
+      {...attributes}
+    >
+      {/* Drag handle for column reorder — only this element activates column drag */}
+      <div
+        className="flex items-center justify-between px-3 py-2.5 border-b border-border cursor-grab active:cursor-grabbing"
+        {...listeners}
+      >
         <div className="flex items-center gap-2">
-          <div className="w-2 h-2 rounded-full bg-primary"></div>
+          <div className="w-2 h-2 rounded-full bg-primary" />
           <span className="font-semibold text-sm text-text-primary">{column.name}</span>
           <span className="text-xs text-text-secondary bg-card px-1.5 py-0.5 rounded-full border border-border">
             {column.tasks.length}
           </span>
         </div>
         <button
-          onClick={handleDeleteColumn}
+          onClick={(e) => { e.stopPropagation(); handleDeleteColumn() }}
+          onPointerDown={(e) => e.stopPropagation()}
           className="p-1 text-text-secondary hover:text-red-500 hover:bg-red-50 rounded transition-colors opacity-0 group-hover:opacity-100"
           title="Excluir coluna"
         >
@@ -68,7 +81,7 @@ export default function KanbanColumn({ column, onCardClick }: Props) {
         </button>
       </div>
 
-      <div className="flex-1 overflow-y-auto scrollbar-thin p-2 space-y-2 min-h-[100px]">
+      <div ref={setDropRef} className="flex-1 overflow-y-auto scrollbar-thin p-2 space-y-2 min-h-[100px]">
         <SortableContext items={taskIds} strategy={verticalListSortingStrategy}>
           {column.tasks.map((task) => (
             <KanbanCard key={task.id} task={task} onCardClick={onCardClick} />

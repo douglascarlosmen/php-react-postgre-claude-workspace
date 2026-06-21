@@ -11,7 +11,7 @@ interface Props {
 
 export default function KanbanCard({ task, onCardClick, isDragging = false }: Props) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging: isSortableDragging } = useSortable({
-    id: task.id,
+    id: `task-${task.id}`,
     data: { type: 'task', task },
   })
 
