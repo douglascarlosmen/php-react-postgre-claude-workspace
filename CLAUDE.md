@@ -58,3 +58,97 @@ Invoke with: `/caveman` (default intensity)
 - Get component property definitions and usage patterns
 - Find hooks for functional components
 - Component integration and customization guidance
+
+# ACC (Architecture, Code, Configuration) Plugin
+
+Advanced agent system for PHP/full-stack development. 73 specialized agents + 26 skills covering architecture, code quality, security, Docker, CI/CD, and testing.
+
+## Quick Start
+
+### Architecture & Design
+- `/acc:audit-architecture` — Comprehensive architecture review (layers, coupling, dependencies)
+- `/acc:generate-ddd` — DDD building blocks (entities, aggregates, repositories, use cases)
+- `/acc:audit-ddd` — DDD pattern compliance audit
+
+### Code Quality & Review
+- `/acc:bug-fix` — Diagnose and fix bugs with root cause analysis
+- `/acc:audit-test` — Test quality and coverage analysis
+- `/acc:audit-performance` — N+1 queries, caching, loop efficiency detection
+- `/acc:audit-security` — OWASP vulnerabilities (injection, auth, crypto, validation)
+
+### Docker & Infrastructure
+- `/acc:generate-docker` — Dockerfiles, Docker Compose, multi-stage builds
+- `/acc:audit-docker` — Security, performance, production readiness audit (via coordinator)
+
+### CI/CD Pipeline
+- `/acc:ci-setup` — GitHub Actions / GitLab CI pipeline configuration
+- `/acc:ci-fix` — Diagnose and fix CI failures
+
+### Refactoring & Patterns
+- `/acc:refactor` — Guided refactoring (readability, SOLID, testability)
+- `/acc:generate-patterns` — Design patterns (Factory, Strategy, CQRS, etc.)
+
+### PSR Standards
+- `/acc:audit-psr` — PSR-1/12/4 compliance and coding standards
+- `/acc:generate-psr` — PSR-compliant loggers, caches, HTTP clients, containers
+
+### Documentation
+- `/acc:generate-documentation` — README, API docs, architecture guides, ADRs
+
+## When to Use Agents vs Skills
+
+**Use agents** (`/acc:skill-name`) when:
+- Requesting multi-step analysis (audit, refactor, fix)
+- Need comprehensive report with findings and recommendations
+- Complex task requiring coordination of sub-agents
+
+**Use skills** when:
+- Quick knowledge lookup (e.g., `acc:solid-knowledge`, `acc:cqrs-knowledge`)
+- Simple templates (e.g., `acc:adr-template`, `acc:readme-template`)
+- Specific checks (e.g., `acc:check-sql-injection`, `acc:detect-n-plus-one`)
+
+## RTK Integration with ACC
+
+RTK transparently rewrites commands; ACC agents work alongside:
+```bash
+rtk gain              # See token savings from this session
+rtk discover          # Identify which ACC agents could optimize your workflow
+```
+
+# Usage Patterns
+
+## Daily Workflow
+1. **Code review**: Use `/acc:audit-performance` + `/acc:audit-security` for PR review
+2. **Bug investigation**: Use `/acc:bug-fix` for diagnosis + fix
+3. **Refactoring**: Use `/acc:refactor` for guided improvements
+4. **Testing**: Use `/acc:audit-test` for coverage gaps + `/acc:generate-test` for new tests
+
+## Architecture Decisions
+- Use `/acc:audit-architecture` proactively for layering, coupling issues
+- Use `/acc:generate-ddd` when adding new domains or aggregates
+- Use `/acc:generate-patterns` for resilience (Circuit Breaker, Retry, Rate Limiter)
+
+## Infrastructure
+- Use `/acc:generate-docker` for Dockerfile/Docker Compose setup
+- Use `/acc:ci-setup` to establish CI/CD pipelines
+- Use `/acc:ci-fix` when builds fail
+
+## Response Compression
+Use `/caveman` for ultra-compressed responses (token savings + conciseness):
+```bash
+/caveman /acc:audit-security    # Run security audit, ultra-compressed output
+```
+
+# Quick Reference
+
+| Task | Command |
+|------|---------|
+| Review PR code | `/acc:audit-performance` + `/acc:audit-security` |
+| Fix a bug | `/acc:bug-fix` |
+| Add feature safely | `/acc:generate-ddd` (domain) + `/acc:audit-security` |
+| Improve code | `/acc:refactor` |
+| Set up CI/CD | `/acc:ci-setup` |
+| Audit Docker | `/acc:generate-docker` or specific Docker agent |
+| Check PSR standards | `/acc:audit-psr` |
+| Write documentation | `/acc:generate-documentation` |
+| Token savings check | `rtk gain` |
