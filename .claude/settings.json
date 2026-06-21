@@ -59,6 +59,14 @@
         "mcp-postgres-full-access",
         "postgresql://postgres:postgres@postgres:5432/myapp_db"
       ]
+    },
+    "rsuite": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@rsuite/mcp@latest"
+      ]
     }
   }
 }
