@@ -14,8 +14,11 @@ interface Props {
 }
 
 export default function KanbanColumn({ column, onCardClick }: Props) {
-  const { removeColumn } = useBoardStore()
+  const { removeColumn, updateColumn } = useBoardStore()
   const [showAdd, setShowAdd] = useState(false)
+  const [isEditingName, setIsEditingName] = useState(false)
+  const [editedName, setEditedName] = useState(column.name)
+  const [isUpdating, setIsUpdating] = useState(false)
 
   // Sortable for column reordering — listeners applied only to the drag handle (header)
   const {
@@ -48,6 +51,44 @@ export default function KanbanColumn({ column, onCardClick }: Props) {
     toast.success('Coluna excluída')
   }
 
+  async function handleSaveName() {
+    if (!editedName.trim()) {
+      toast.error('Nome da coluna não pode estar vazio')
+      setEditedName(column.name)
+      return
+    }
+
+    if (editedName === column.name) {
+      setIsEditingName(false)
+      return
+    }
+
+    setIsUpdating(true)
+    try {
+      await updateColumn(column.id, editedName)
+      toast.success('Nome da coluna atualizado')
+      setIsEditingName(false)
+    } catch {
+      toast.error('Erro ao atualizar nome da coluna')
+      setEditedName(column.name)
+    } finally {
+      setIsUpdating(false)
+    }
+  }
+
+  function handleCancelEdit() {
+    setEditedName(column.name)
+    setIsEditingName(false)
+  }
+
+  function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
+    if (e.key === 'Enter') {
+      handleSaveName()
+    } else if (e.key === 'Escape') {
+      handleCancelEdit()
+    }
+  }
+
   const taskIds = column.tasks.map((t) => `task-${t.id}`)
 
   return (
@@ -62,23 +103,53 @@ export default function KanbanColumn({ column, onCardClick }: Props) {
         className="flex items-center justify-between px-3 py-2.5 border-b border-border cursor-grab active:cursor-grabbing"
         {...listeners}
       >
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-1">
           <div className="w-2 h-2 rounded-full bg-primary" />
-          <span className="font-semibold text-sm text-text-primary">{column.name}</span>
+          {isEditingName ? (
+            <input
+              autoFocus
+              type="text"
+              value={editedName}
+              onChange={(e) => setEditedName(e.target.value)}
+              onKeyDown={handleKeyDown}
+              onBlur={handleSaveName}
+              disabled={isUpdating}
+              className="flex-1 px-2 py-1 text-sm font-semibold bg-card border border-primary rounded focus:outline-none focus:ring-1 focus:ring-primary disabled:opacity-50"
+              onClick={(e) => e.stopPropagation()}
+              onPointerDown={(e) => e.stopPropagation()}
+              onDragStart={(e) => e.preventDefault()}
+            />
+          ) : (
+            <span className="font-semibold text-sm text-text-primary">
+              {column.name}
+            </span>
+          )}
           <span className="text-xs text-text-secondary bg-card px-1.5 py-0.5 rounded-full border border-border">
             {column.tasks.length}
           </span>
         </div>
-        <button
-          onClick={(e) => { e.stopPropagation(); handleDeleteColumn() }}
-          onPointerDown={(e) => e.stopPropagation()}
-          className="p-1 text-text-secondary hover:text-red-500 hover:bg-red-50 rounded transition-colors opacity-0 group-hover:opacity-100"
-          title="Excluir coluna"
-        >
-          <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-          </svg>
-        </button>
+        <div className="flex items-center gap-1">
+          <button
+            onClick={(e) => { e.stopPropagation(); setIsEditingName(true) }}
+            onPointerDown={(e) => e.stopPropagation()}
+            className="p-1 text-text-secondary hover:text-primary hover:bg-primary-light rounded transition-colors opacity-0 group-hover:opacity-100"
+            title="Editar coluna"
+          >
+            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+            </svg>
+          </button>
+          <button
+            onClick={(e) => { e.stopPropagation(); handleDeleteColumn() }}
+            onPointerDown={(e) => e.stopPropagation()}
+            className="p-1 text-text-secondary hover:text-red-500 hover:bg-red-50 rounded transition-colors opacity-0 group-hover:opacity-100"
+            title="Excluir coluna"
+          >
+            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
       </div>
 
       <div ref={setDropRef} className="flex-1 overflow-y-auto scrollbar-thin p-2 space-y-2 min-h-[100px]">

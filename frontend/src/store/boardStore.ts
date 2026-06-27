@@ -9,6 +9,7 @@ interface BoardState {
   fetchBoard: (boardId: number) => Promise<void>
   addColumn: (boardId: number, name: string) => Promise<void>
   removeColumn: (id: number) => void
+  updateColumn: (id: number, name: string) => Promise<void>
   setColumns: (columns: Column[]) => void
   addTask: (columnId: number, title: string) => Promise<Task>
   moveTask: (taskId: number, fromColumnId: number, toColumnId: number, newOrder: number) => Promise<void>
@@ -34,6 +35,13 @@ export const useBoardStore = create<BoardState>((set, get) => ({
   removeColumn: (id) => {
     columnsApi.deleteColumn(id)
     set((s) => ({ columns: s.columns.filter((c) => c.id !== id) }))
+  },
+
+  updateColumn: async (id, name) => {
+    await columnsApi.updateColumn(id, name)
+    set((s) => ({
+      columns: s.columns.map((c) => (c.id === id ? { ...c, name } : c)),
+    }))
   },
 
   setColumns: (columns) => set({ columns }),
