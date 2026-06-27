@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__rsuite-mcp__list_components"
+    ]
+  }
+}
